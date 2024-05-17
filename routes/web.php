@@ -24,3 +24,11 @@ Route::get('login', function () {
 Route::get('sign-up', function () {
     return view('pages.auth.sign-up');
 });
+
+Route::get('discussions', function () {
+    return view('pages.discussions.index');
+});
+
+Route::get('discussions/lorem', function () {
+    return view('pages.discussions.show');
+});
