@@ -24,28 +24,54 @@
                         <img src="{{ url('assets/images/logo-blue.png') }}" alt="">
                     </a>
                     <div class="card mb-5">
-                        <form action="">
+                        <form action="{{ route('auth.sign-up.sign-up') }}" method="POST">
+                            @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="name@example.com"
-                                    autocomplete="off" autofocus>
+                                <input type="email"
+                                    class="form-control @error('email')
+                                    is-invalid
+                                @enderror"
+                                    id="email" placeholder="name@example.com" name="email" autocomplete="off"
+                                    autofocus value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control border-end-0 pe-0 rounded-0 rounded-start"
+                                    <input type="password"
+                                        class="form-control @error('password') is-invalid @enderror border-end-0 pe-0 rounded-0 rounded-start"
                                         id="password" name="password" placeholder="********">
-                                    <span class="input-group-text bg-white border-start-0 pe-auto" id="">
+                                    <span
+                                        class="input-group-text bg-white border-start-0 pe-auto @error('password')
+                                    border-danger rounded-end
+                                @enderror"
+                                        id="">
                                         <a href="javascript:;" id="password-toggle">
                                             <img src="{{ url('assets/images/eye-slash.png') }}" alt="Password Toogle"
                                                 id="password-toggle-img">
                                         </a>
                                     </span>
+                                    @error('password')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" autocomplete="off">
+                                <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                    id="username" name="username" autocomplete="off" value="{{ old('username') }}">
+                                @error('username')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="mb-3 d-grid">
                                 <button type="submit" class="btn btn-primary rounded-2">
@@ -55,7 +81,8 @@
                         </form>
                     </div>
                     <div class="text-center">
-                        Already have an account? <a href="#" class="text-underline"><u>Log in</u></a>
+                        Already have an account? <a href="{{ route('auth.login.show') }}" class="text-underline"><u>Log
+                                in</u></a>
                     </div>
                 </div>
             </div>

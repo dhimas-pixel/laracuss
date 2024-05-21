@@ -24,4 +24,10 @@ class LoginController extends Controller
 
         return redirect()->back()->withInput()->withErrors(['credentials' => 'The email or password you entered is incorrect.']);
     }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect()->route('home');
+    }
 }

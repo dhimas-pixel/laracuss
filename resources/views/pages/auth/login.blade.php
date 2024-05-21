@@ -63,7 +63,8 @@
                         </form>
                     </div>
                     <div class="text-center">
-                        Don’t have an account? <a href="#" class="text-underline"><u>Sign Up</u></a>
+                        Don’t have an account? <a href="{{ route('auth.sign-up.show') }}" class="text-underline"><u>Sign
+                                Up</u></a>
                     </div>
                 </div>
             </div>
