@@ -14,9 +14,27 @@ class DiscussionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // load semua discussion
+        // eager load relasi
+        // apakah ada request data search
+        // jika ada maka load discussion dengan kata kunci title & content yg nilainya seperti nilai search
+        // return page index & data
+        // data nya di sort sesuai created_at, pagination per 10 / 20
+        // data category
+        $discussions = Discussion::with('user', 'category');
+
+        if ($request->search) {
+            $discussions = $discussions->where('title', 'like', '%' . $request->search . '%')
+                ->orWhere('content', 'like', '%' . $request->search . '%');
+        }
+
+        return response()->view('pages.discussions.index', [
+            'discussions' => $discussions->orderBy('created_at', 'desc')->paginate(10)->withQueryString(),
+            'categories' => Category::all(),
+            'search' => $request->search,
+        ]);
     }
 
     /**
@@ -74,9 +92,14 @@ class DiscussionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //
+        $discussions = Discussion::with(['user', 'category'])->where('slug', $slug)->first();
+
+        return response()->view('pages.discussions.show', [
+            'discussion' => $discussions,
+            'categories' => Category::all(),
+        ]);
     }
 
     /**

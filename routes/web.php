@@ -22,6 +22,11 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::namespace('App\Http\Controllers')->group(function () {
+    Route::resource('discussions', DiscussionController::class)->only(['index', 'show']);
+    Route::get('discussions/categories/{category}', 'CategoryController@show')->name('discussions.categories.show');
+});
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -33,16 +38,6 @@ Route::namespace('App\Http\Controllers\Auth')->group(function () {
     Route::get('sign-up', 'SignUpController@show')->name('auth.sign-up.show');
     Route::post('sign-up', 'SignUpController@signUp')->name('auth.sign-up.sign-up');
 });
-
-
-Route::get('discussions', function () {
-    return view('pages.discussions.index');
-})->name('discussions.index');
-
-Route::get('discussions/lorem', function () {
-    return view('pages.discussions.show');
-})->name('discussions.show');
-
 
 Route::get('answers/1', function () {
     return view('pages.answers.form');

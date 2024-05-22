@@ -21,13 +21,15 @@
                     <a class="nav-link text-nowrap" href="#">About Us</a>
                 </li>
             </ul>
-            <form class="d-flex w-100 me-4 my-2 my-lg-0" role="search" method="GET">
+            <form class="d-flex w-100 me-4 my-2 my-lg-0" role="search" method="GET"
+                action="{{ route('discussions.index') }}">
+                @csrf
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0">
                         <img src="{{ url('assets/images/magnifier.png') }}" alt="Search">
                     </span>
                     <input class="form-control border-start-0 ps-0" type="search" placeholder="Search"
-                        aria-label="Search" name="" value="">
+                        aria-label="Search" name="search" value="{{ $search ?? '' }}">
                 </div>
             </form>
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
