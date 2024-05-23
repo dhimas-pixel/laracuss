@@ -96,9 +96,14 @@ class DiscussionController extends Controller
     {
         $discussions = Discussion::with(['user', 'category'])->where('slug', $slug)->first();
 
+        $notLikedImage = url('assets/images/like.png');
+        $LikedImage = url('assets/images/liked.png');
+
         return response()->view('pages.discussions.show', [
             'discussion' => $discussions,
             'categories' => Category::all(),
+            'likedImage' => $LikedImage,
+            'notLikedImage' => $notLikedImage,
         ]);
     }
 

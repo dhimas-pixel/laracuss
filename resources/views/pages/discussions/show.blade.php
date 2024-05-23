@@ -23,10 +23,12 @@
                     <div class="card card-discussions mb-5">
                         <div class="row">
                             <div class="col-1 d-flex flex-column align-items-center justify-content-start">
-                                <a href="#">
-                                    <img src="{{ url('assets/images/like.png') }}" alt="like" class="like-icon mb-1">
+                                <a id="discussion-like" href="javascript:;" data-liked="{{ $discussion->liked() }}">
+                                    <img src="{{ $discussion->liked() ? $likedImage : $notLikedImage }}" alt="like"
+                                        class="like-icon mb-1" id="discussion-like-icon">
                                 </a>
-                                <span class="fs-4 text-center color-gray mb-1">12</span>
+                                <span id="discussion-like-count"
+                                    class="fs-4 text-center color-gray mb-1">{{ $discussion->likeCount }}</span>
                             </div>
                             <div class="col-11">
                                 <p>
@@ -184,6 +186,41 @@
 
                 var alertContainer = alert.find('.container');
                 alertContainer.first().text('Link to this discussion copied successfully');
+            })
+
+            $('#discussion-like').on('click', function() {
+                // get data like
+                // route ajax, berdasarkan sudah like apa belum
+                // lakukan proses ajax
+                // jika ajax berhasil dapatkan status json
+                // jika statusnya success maka isi counter like dengan data counter like dari jsonnya
+                // lalu ganti icon berdasarkan point 1
+                // jika user sebelumnya sudah like, ganti icon jadi unlike
+                // jika user sebelumnya belum like, ganti icon jadi like
+
+                var isLiked = $(this).data('liked');
+                var likeRoute = isLiked ? "{{ route('discussions.like.unlike', $discussion->slug) }}" :
+                    "{{ route('discussions.like.like', $discussion->slug) }}";
+
+                $.ajax({
+                    method: 'POST',
+                    url: likeRoute,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    }
+                }).done(function(res) {
+                    if (res.status === 'success') {
+                        $('#discussion-like-count').text(res.data.likeCount);
+
+                        if (isLiked) {
+                            $('#discussion-like-icon').attr('src', "{{ $notLikedImage }}");
+                        } else {
+                            $('#discussion-like-icon').attr('src', "{{ $likedImage }}");
+                        }
+
+                        $('#discussion-like').data('liked', !isLiked);
+                    }
+                })
             })
         })
     </script>
