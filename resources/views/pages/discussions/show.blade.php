@@ -50,6 +50,26 @@
                                             <input type="text" value="{{ route('discussions.show', $discussion->slug) }}"
                                                 id="current-url" class="d-none">
                                         </span>
+
+                                        @if ($discussion->user_id === auth()->id())
+                                            <span class="me-2 color-gray">
+                                                <a href="{{ Route('discussions.edit', $discussion->slug) }}">
+                                                    <small>Edit</small>
+                                                </a>
+                                            </span>
+
+                                            <form action="{{ route('discussions.destroy', $discussion->slug) }}"
+                                                class="d-inline-block lh-1" method="POST">
+
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="color-gray btn p-0 lh-1" id="delete-discussion"
+                                                    type="submit"><small
+                                                        class="card-discussion-delete-btn">Delete</small></button>
+
+                                            </form>
+                                        @endif
+
                                     </div>
                                     <div class="col-5 col-lg-3 d-flex">
                                         <a href="#"
@@ -147,12 +167,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="fw-bold text-center">
-                        Please <a href="{{ route('auth.login.login') }}" class="text-primary">sign in</a> or
-                        <a href="{{ route('auth.sign-up.sign-up') }}" class="text-primary">create an account</a> to
-                        participate
-                        in this discussion.
-                    </div>
+                    @auth()
+                        <h3 class="mb-5">
+                            Your Answer
+                        </h3>
+                        <div class="card card-discussions">
+                            <form action="{{ route('discussions.answer.store', $discussion->slug) }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <textarea id="answer" name="answer">{{ old('answer') }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary me-4">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    @endauth
+                    @guest()
+                        <div class="fw-bold text-center">
+                            Please <a href="{{ route('auth.login.login') }}" class="text-primary">sign in</a> or
+                            <a href="{{ route('auth.sign-up.sign-up') }}" class="text-primary">create an account</a> to
+                            participate
+                            in this discussion.
+                        </div>
+                    @endguest
                 </div>
                 <div class="col-12 col-lg-4">
                     <div class="card">
@@ -222,6 +260,28 @@
                     }
                 })
             })
+
+            $('#delete-discussion').click(function() {
+                if (!confirm('Delete this discussion?')) {
+                    event.preventDefault();
+                }
+            });
+
+            $('#answer').summernote({
+                placeholder: 'Write your solution here',
+                tabsize: 2,
+                height: 320,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['codeview', 'help']],
+                ]
+            });
+            $('span.note-icon-caret').remove();
         })
     </script>
 @endsection

@@ -17,15 +17,21 @@
                     <div class="card card-discussions mb-5">
                         <div class="row">
                             <div class="col-12">
-                                <form action="{{ route('discussions.store') }}" method="POST">
+                                <form
+                                    action="{{ isset($discussion) ? route('discussions.update', $discussion->slug) : route('discussions.store') }}"
+                                    method="POST">
                                     @csrf
+
+                                    @isset($discussion)
+                                        @method('PUT')
+                                    @endisset
                                     <div class="mb-3">
                                         <label for="title" class="form-label">Title</label>
                                         <input type="text"
                                             class="form-control 
                                         @error('title') is-invalid @enderror"
                                             id="title" name="title" autocomplete="off" autofocus
-                                            value="{{ old('title') }}">
+                                            value="{{ $discussion->title ?? old('title') }}">
                                         @error('title')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -39,7 +45,7 @@
                                             <option value="">-- Choose one--</option>
                                             @foreach ($categories as $item)
                                                 <option value="{{ $item->slug }}"
-                                                    @if (old('category_slug') === $item->slug) {{ 'selected' }} @endif>
+                                                    @if (($discussion->category->slug ?? old('category_slug')) === $item->slug) {{ 'selected' }} @endif>
                                                     {{ $item->name }}</option>
                                             @endforeach
                                         </select>
@@ -51,7 +57,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="content" class="form-label">Question</label>
-                                        <textarea class="form-control  @error('content') is-invalid @enderror" id="content" name="content">{{ old('content') }}</textarea>
+                                        <textarea class="form-control  @error('content') is-invalid @enderror" id="content" name="content">{{ $discussion->content ?? old('content') }}</textarea>
                                         @error('content')
                                             <div class="invalid-feedback">
                                                 {{ $message }}

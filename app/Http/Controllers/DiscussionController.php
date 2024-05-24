@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Discussion\StoreRequest;
+use App\Http\Requests\Discussion\UpdateRequest;
 use App\Models\Category;
 use App\Models\Discussion;
 use Illuminate\Http\Request;
@@ -96,6 +97,10 @@ class DiscussionController extends Controller
     {
         $discussions = Discussion::with(['user', 'category'])->where('slug', $slug)->first();
 
+        if (!$discussions) {
+            return abort(404);
+        }
+
         $notLikedImage = url('assets/images/like.png');
         $LikedImage = url('assets/images/liked.png');
 
@@ -110,24 +115,95 @@ class DiscussionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $slug)
     {
-        //
+        // get data berdasarkan slug
+        // cek data tersebut
+        // jika tidak ada return 404
+        // jika ada lanjut
+        // cek apakah discussion ini milik user yang sedang login
+        // jika bukan return 404
+        // jika iya return view
+
+        $discussions = Discussion::with('category')->where('slug', $slug)->first();
+
+        if (!$discussions) {
+            return abort(404);
+        }
+
+        $isOwnedByUser = $discussions->user_id == auth()->id();
+
+        if (!$isOwnedByUser) {
+            return abort(404);
+        }
+
+        return response()->view('pages.discussions.form', [
+            'discussion' => $discussions,
+            'categories' => Category::all(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, string $slug)
     {
-        //
+        $discussions = Discussion::with('category')->where('slug', $slug)->first();
+
+        if (!$discussions) {
+            return abort(404);
+        }
+
+        $isOwnedByUser = $discussions->user_id == auth()->id();
+
+        if (!$isOwnedByUser) {
+            return abort(404);
+        }
+
+        $validated = $request->validated();
+        $categoryId = Category::where('slug', $validated['category_slug'])->first()->id;
+
+        $validated['category_id'] = $categoryId;
+        $validated['user_id'] = auth()->id();
+
+        $stripContent = strip_tags($validated['content']);
+        $isContentLong = strlen($stripContent) > 120;
+        $validated['content_preview'] = $isContentLong ? substr($stripContent, 0, 120) . '...' : $stripContent;
+
+        $update =  $discussions->update($validated);
+
+        if ($update) {
+            session()->flash('notif.success', 'Discussion updated successfully!');
+            return redirect()->route('discussions.show', $slug);
+        }
+
+        return abort(500);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $slug)
     {
-        //
+        $discussions = Discussion::with('category')->where('slug', $slug)->first();
+
+        if (!$discussions) {
+            return abort(404);
+        }
+
+        $isOwnedByUser = $discussions->user_id == auth()->id();
+
+        if (!$isOwnedByUser) {
+            return abort(404);
+        }
+
+        $delete = $discussions->delete();
+
+        if ($delete) {
+            session()->flash('notif.success', 'Discussion deleted successfully!');
+            return redirect()->route('discussions.index');
+        }
+
+        return abort(500);
     }
 }
