@@ -31,10 +31,10 @@
                             <div class="row">
                                 <div class="col-12 col-lg-2 mb-1 mb-lg-0 d-flex flex-row flex-lg-column align-items-end">
                                     <div class="text-nowrap me-2 me-lg-0">
-                                        3 Likes
+                                        {{ $item->likeCount . ' ' . Str::plural('like', $item->likeCount) }}
                                     </div>
                                     <div class="text-nowrap color-gray">
-                                        10 Answers
+                                        {{ $item->answers->count() . ' ' . Str::plural('answer', $item->answers->count()) }}
                                     </div>
                                 </div>
                                 <div class="col-12 col-lg-10">
@@ -43,7 +43,8 @@
                                         <p>{!! $item->content_preview !!}</p>
                                         <div class="row">
                                             <div class="col me-1 me-lg-2">
-                                                <a href="{{ route('discussions.categories.show', $item->category->slug) }}">
+                                                <a
+                                                    href="{{ route('discussions.categories.show', $item->category->slug) }}">
                                                     <span
                                                         class="badge rounded-pill text-bg-light">{{ $item->category->name }}</span>
                                                 </a>

@@ -31,9 +31,9 @@
                                     class="fs-4 text-center color-gray mb-1">{{ $discussion->likeCount }}</span>
                             </div>
                             <div class="col-11">
-                                <p>
+                                <div>
                                     {!! $discussion->content !!}
-                                </p>
+                                </div>
                                 <div class="mb-3">
                                     <a href="{{ route('discussions.categories.show', $discussion->category->slug) }}">
                                         <span class="badge rounded-pill text-bg-light">
@@ -103,19 +103,40 @@
                             <div class="card card-discussions">
                                 <div class="row">
                                     <div class="col-1 d-flex flex-column align-items-center justify-content-start">
-                                        <a href="#">
-                                            <img src="{{ url('assets/images/like.png') }}" alt=""
-                                                class="like-icon mb-1">
+                                        <a href="javascript:;" data-id="{{ $item->id }}"
+                                            data-liked="{{ $item->liked() }}"
+                                            class="answer-like d-flex flex-column align-items-center justify-content-start">
+                                            <img src="{{ $item->liked() ? $likedImage : $notLikedImage }}" alt="Like"
+                                                class="answer-like-icon mb-1">
+                                            <span class="answer-like-count fs-4 text-center color-gray mb-1">
+                                                {{ $item->likeCount }}
+                                            </span>
                                         </a>
-                                        <span class="fs-4 text-center color-gray mb-1">
-                                            12
-                                        </span>
                                     </div>
                                     <div class="col-11">
-                                        <p>
+                                        <div>
                                             {!! $item->answer !!}
-                                        </p>
+                                        </div>
                                         <div class="row align-items-end justify-content-end">
+                                            <div class="col">
+                                                @if ($item->user_id === auth()->id())
+                                                    <span class="color-gray">
+                                                        <a
+                                                            href="{{ Route('answers.edit', $item->id) }}"><small>Edit</small></a>
+                                                    </span>
+                                                    <span class="color-gray ms-2">
+                                                        <form action="{{ Route('answers.destroy', $item->id) }}"
+                                                            method="POST" class="d-inline-block lh-1">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="color-gray btn p-0 lh-1" type="submit"
+                                                                id="delete-answer">
+                                                                <small class="card-discussion-delete-btn">Delete</small>
+                                                            </button>
+                                                        </form>
+                                                    </span>
+                                                @endif
+                                            </div>
                                             <div class="col-5 col-lg-3 d-flex">
                                                 <a href="#"
                                                     class="card-discussions-show-avatar-wrapper flex-shrink-0 rounded-circle overflow-hidden me-1">
@@ -244,6 +265,39 @@
                 }
             });
 
+            $('.answer-like').click(function(event) {
+                var $this = $(this);
+                var id = $this.data('id');
+                var isLiked = $this.data('liked');
+                var likeRoute = isLiked ? "{{ url('') }}/answers/" + id + "/unlike" :
+                    "{{ url('') }}/answers/" + id + "/like";
+
+                $.ajax({
+                    method: 'POST',
+                    url: likeRoute,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    }
+                }).done(function(res) {
+                    if (res.status === 'success') {
+                        $this.find('.answer-like-count').text(res.data.likeCount);
+
+                        if (isLiked) {
+                            $this.find('.answer-like-icon').attr('src', "{{ $notLikedImage }}");
+                        } else {
+                            $this.find('.answer-like-icon').attr('src', "{{ $likedImage }}");
+                        }
+                        $this.data('liked', !isLiked);
+                    }
+                })
+            })
+
+            $('#delete-answer').click(function() {
+                if (!confirm('Delete this answer?')) {
+                    event.preventDefault();
+                }
+            });
+
             $('#answer').summernote({
                 placeholder: 'Write your solution here',
                 tabsize: 2,
@@ -259,6 +313,8 @@
                 ]
             });
             $('span.note-icon-caret').remove();
+
+
         })
     </script>
 @endsection
