@@ -79,7 +79,7 @@
                                         </a>
                                         <div class="fs-12px lh-1">
                                             <span class="text-primary">
-                                                <a href="#"
+                                                <a href="{{ route('users.show', $discussion->user->username) }}"
                                                     class="fw-bold d-flex align-items-start text-break mb-1">{{ $discussion->user->username }}</a>
                                                 <span
                                                     class="color-gray">{{ $discussion->created_at->diffForHumans() }}</span>

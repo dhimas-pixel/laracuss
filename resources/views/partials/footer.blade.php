@@ -1,4 +1,4 @@
-<footer class="py-80px">
+<footer class="py-80px" id="about-us">
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6 mb-5 mb-lg-0">
@@ -22,8 +22,8 @@
                         </p>
                         <ul class="list-unstyled">
                             <li class="text-white mb-2"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="text-white mb-2"><a href="#">Discussion</a></li>
-                            <li class="text-white mb-2"><a href="#">About Us</a></li>
+                            <li class="text-white mb-2"><a href="{{ route('discussions.index') }}">Discussion</a></li>
+                            <li class="text-white mb-2"><a href="#about-us">About Us</a></li>
                         </ul>
                     </div>
                 </div>
