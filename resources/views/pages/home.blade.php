@@ -73,6 +73,7 @@
                         </div>
                     </div>
                 @empty
+                    <p class="text-center">No discussions yet.</p>
                 @endforelse
             </div>
         </div>
