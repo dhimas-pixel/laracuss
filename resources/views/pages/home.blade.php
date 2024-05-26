@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-12 col-lg-4 mb-3">
+                    <div class="col-12 col-lg-4 mb-3 mx-auto">
                         <div class="card">
                             <p class="text-center">No discussions yet.</p>
                         </div>
