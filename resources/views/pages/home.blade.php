@@ -73,7 +73,11 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-center">No discussions yet.</p>
+                    <div class="col-12 col-lg-4 mb-3">
+                        <div class="card">
+                            <p class="text-center">No discussions yet.</p>
+                        </div>
+                    </div>
                 @endforelse
             </div>
         </div>
