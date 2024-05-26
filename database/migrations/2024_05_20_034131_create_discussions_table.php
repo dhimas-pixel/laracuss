@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('content_preview');
+            $table->text('content');
             $table->timestamps();
             $table->softDeletes();
         });
