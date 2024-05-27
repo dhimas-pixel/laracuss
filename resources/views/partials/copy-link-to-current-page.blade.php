@@ -1,6 +1,6 @@
 <script>
     $(document).ready(function() {
-        $('#share-page').on('click', function() {
+        $('#share-page').click(function() {
             var copyText = $('#current-url');
 
             if (windows.isSecureContext && navigator.clipboard) {
