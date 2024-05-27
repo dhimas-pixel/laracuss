@@ -208,21 +208,10 @@
 @endsection
 
 @section('after-script')
+    @include('partials.copy-link-to-current-page')
     <script>
         $(document).ready(function() {
-            $('#share-discussion').on('click', function() {
-                var copyText = $('#current-url');
 
-                copyText[0].select();
-                copyText[0].setSelectionRange(0, 99999);
-                navigator.clipboard.writeText(copyText.val());
-
-                var alert = $('#alert');
-                alert.removeClass('d-none');
-
-                var alertContainer = alert.find('.container');
-                alertContainer.first().text('Link to this discussion copied successfully');
-            })
 
             $('#discussion-like').on('click', function() {
                 // get data like
