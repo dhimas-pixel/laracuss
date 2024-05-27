@@ -22,7 +22,7 @@
                     </div>
                     <div>
                         <input type="text" id="current-url" class="d-none" value="{{ request()->url() }}">
-                        <a href="javascript:;" id="share-profile" class="btn btn-primary me-4">Share</a>
+                        <a href="javascript:;" id="share-page" class="btn btn-primary me-4">Share</a>
                         @auth()
                             @if ($user->id === auth()->user()->id)
                                 <a href="{{ route('users.edit', $user->username) }}">Edit Profile</a>
